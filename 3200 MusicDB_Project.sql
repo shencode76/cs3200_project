@@ -3,12 +3,14 @@ create database MusicDB_Project;
 use MusicDB_Project;
 
 /* create a user table to store information of registered users*/
+drop table User;
 create table User (
 user_id int primary key,
 user_name varchar(30)
 );
 
 /* create a administrator table to store administrators' information*/
+drop table Administrator;
 create table Administrator (
 admin_id int,
 admin_name varchar(30),
@@ -19,6 +21,7 @@ CONSTRAINT user_admin_fk
 );
 
 /* create a member table to store member' information*/
+drop table Member;
 create table Member (
 member_id int,
 member_name varchar(30),
@@ -29,6 +32,7 @@ CONSTRAINT user_member_fk
 );
 
 /* create a song table to store songs' information*/
+drop table Song;
 create table Song (
 song_id int primary key,
 song_name varchar(30),
@@ -48,12 +52,16 @@ CONSTRAINT song_genre_id_fk
 );
 
 /* create a comment table to store comments' information*/
+drop table Comment;
 create table Comment (
-comment_id int primary key,
-comments varchar(30)
+comment_id int not null auto_increment,
+comments varchar(30),
+CONSTRAINT comment_pk PRIMARY KEY (comment_id)
 );
 
+
 /* create a Album table to store albums'' information*/
+drop table Album;
 create table Album (
 album_id int primary key,
 album_name varchar(30),
@@ -69,12 +77,14 @@ CONSTRAINT album_genre_fk
 );
 
 /* create a genre table to store music genre, artist genre, album genre information*/
+drop table Genre;
 create table Genre (
 genre_id int primary key,
 genre_name varchar(30)
 );
 
 /* create a artist table to store artists' information*/
+drop table Artist;
 create table Artist (
 artist_id int primary key,
 artist_name varchar(30),
@@ -91,5 +101,6 @@ CONSTRAINT artist_genre_fk
     FOREIGN KEY (artist_genre)
     REFERENCES Genre (genre_id)
 );
+
 
 
