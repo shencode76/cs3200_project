@@ -68,6 +68,8 @@ call search_artist("Rihanna");
 call search_artist("Suede");
 
 
+
+
 -- generate all the artist, song, album that have given searcing condition 
 DELIMITER $$
 CREATE PROCEDURE Search (in search_condition VARCHAR(30))
@@ -78,7 +80,7 @@ BEGIN
     then select * from Song where song_name = search_condition ;
     	elseif (search_condition in (select artist_name from Artist))
     then select * from Artist where artist_name = search_condition ;
-        else select"no such album or artist or song.";
+        else select "no such album or artist or song.";
     end if;
 
 END$$
@@ -94,29 +96,62 @@ and genre_name = "Jazz";
 -- procedure : produce all the songs that is in given genre
 -- Output : the songs fit this genre
 delimiter $$ 
-
+drop procedure genre_search;
 create procedure genre_search(in given_genre varchar(30))
 begin 
 
-select count(*) as song_numbers, song_name from Song 
-join Genre
-on song_genre_id = genre_id
-and genre_name = given_genre
-group by song_name;
+select genre_name, count(song_name) as count_songs, group_concat(" ", song_name) as songs_in_genre from Genre
+join Song on genre_id = song_genre_id and genre_name = given_genre
+group by genre_name;
 
-return song_fit_genre;
 end $$
 delimiter ;
+call genre_search ("Rock");
 
 -- leave commet under songs 
+drop procedure comment_on;
 delimiter $$
-create procedure comment_on(in comment varchar(30))
+create procedure comment_on(in comment_content varchar(30))
 begin 
-insert into Comment values (comment); 
+insert into Comment(comments) values (comment_content); 
 
 end $$
 delimiter ;
 
+-- create account 
+drop procedure create_account;
+
+delimiter $$
+create procedure create_account(in userName varchar(30), accType varchar(30))
+begin 
+
+declare nameOccupied varchar(100);
+declare typeNotExist varchar(100);
+
+select nameOccupied = 'Name already occupied';
+select typeNotExist = 'Please lowercase account type.';
+
+
+
+if (userName not in (select user_name from user)) then 
+insert into User (user_name) values (userName);
+else select nameOccupied;
+end if;
+
+if (accType = "member") 
+then insert into Member (member_name, member_user_id) 
+values  (userName, (select user_id from User where user_name = userName));
+elseif (accType = "admin") 
+then insert into Administrator (admin_name, admin_user_id)
+values (userName, (select user_id from User where user_name = userName));
+else select typeNotExist;
+end if;
+
+
+end $$
+delimiter ;
+call create_account("Stanley", "admin");
+call create_account("Baron", "member");
 
 
 
