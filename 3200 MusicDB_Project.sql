@@ -15,6 +15,7 @@ insert into User (user_name) values ("JordanM");
 insert into User (user_name) values ("StevenM");
 insert into User (user_name) values ("JoseW");
 insert into User (user_name) values ("ChrisJ");
+insert into User (user_name) values ("Amily");
 
 /* create a administrator table to store administrators' information*/
 create table Administrator (
@@ -29,9 +30,9 @@ CONSTRAINT user_admin_fk
 insert into Administrator (admin_name, admin_user_id) values ("Murphy Lee", 1);
 insert into Administrator (admin_name, admin_user_id) values ("Amy Tan", 2);
 insert into Administrator (admin_name, admin_user_id) values ("Jordan Jason", 3);
+insert into Administrator (admin_name, admin_user_id) values ("Amily", (select user_id from User where user_name = "Amily"));
 
-
-/* create a member table to store member' information*/
+/* create a member table to store member information*/
 create table Member (
 member_id int NOT NULL AUTO_INCREMENT,
 member_name varchar(30),
@@ -80,6 +81,14 @@ insert into Song(song_name, singer_id, song_in_album, song_genre_id)
 values ("What's My Name", 4, 4, 1);
 insert into Song(song_name, singer_id, song_in_album, song_genre_id) 
 values ("Nocturne, Op.9, No.2", 5, 5, 4);
+insert into Song(song_name, singer_id, song_in_album, song_genre_id) 
+values ("Nothing Is Promised", 4, 6, 1);
+insert into Song(song_name, singer_id, song_in_album, song_genre_id) 
+values ("Skin", 4, 4, 1);
+insert into Song(song_name, singer_id, song_in_album, song_genre_id) 
+values ("Man Down", 4, 4, 1);
+insert into Song(song_name, singer_id, song_in_album, song_genre_id) 
+values ("Car Song", 6, 7, 2);
 
 
 /* create a comment table to store comments' information*/
@@ -123,6 +132,10 @@ insert into Album(album_name, album_artist)
 values ("Loud", 4);
 insert into Album(album_name, album_artist) 
 values ("Portrait", 5);
+insert into Album(album_name, album_artist) 
+values ("Nothing Is Promised", 4);
+insert into Album(album_name, album_artist) 
+values ("Elastica", 6);
 
 
 /* create a genre table to store music genre, artist genre, album genre information*/
@@ -159,5 +172,6 @@ insert into Artist(artist_name, artist_genre)
 values ("Rihanna", 1);
 insert into Artist(artist_name, artist_genre) 
 values ("YunDi Li", 4);
-
+insert into Artist(artist_name, artist_genre) 
+values ("Elstica", 2);
 
