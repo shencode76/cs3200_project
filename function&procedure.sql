@@ -226,6 +226,34 @@ call store_search_history("Jose Wasenger", "Lost in TV");
 call store_search_history("Jose Wasenger", "Temptation");
 
 
+-- user can update their user name 
+delimiter $$
+create procedure update_identity(exist_id int, new_user_name varchar(30))
+begin 
+
+update User set user_name = new_user_name where user_id = exist_id;
+
+end $$
+delimiter ;
+
+call update_identity(4, "Steven Madi");
+
+
+-- admin can delete database tuples or user information
+drop procedure delete_from_db;
+delimiter $$
+create procedure delete_from_db(content_delete varchar(30), type_delete varchar(30))
+begin 
+
+if (type_delete = "song") then delete from Song where song_id = (select song_id from Song where song_name = content_delete);
+elseif (type_delete = "user") then delete from User where user_id = (select user_id from User where user_name = content_delete);
+end if;
+ 
+
+
+end $$
+delimiter ;
+call delete_from_db("Butterfly", "song");
 
 
 
