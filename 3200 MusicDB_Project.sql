@@ -83,6 +83,8 @@ insert into Artist(artist_name, artist_genre)
 values ("YunDi Li", 4);
 insert into Artist(artist_name, artist_genre) 
 values ("Elstica", 2);
+insert into Artist(artist_name, artist_genre) 
+values ("UMI", 1);
 
 
 /* create a Album table to store albums'' information*/
@@ -109,7 +111,8 @@ insert into Album(album_name, album_artist)
 values ("Nothing Is Promised", 4);
 insert into Album(album_name, album_artist) 
 values ("Elastica", 6);
-
+insert into Album(album_name, album_artist)
+values ("Butterfly", 7);
 
 
 
@@ -157,6 +160,8 @@ insert into Song(song_name, singer_id, song_in_album, song_genre_id)
 values ("Man Down", 4, 4, 1);
 insert into Song(song_name, singer_id, song_in_album, song_genre_id) 
 values ("Car Song", 6, 7, 2);
+insert into Song(song_name, singer_id, song_in_album, song_genre_id) 
+values ("Butterfly", 7, 8, 1);
 
 
 /* create a comment table to store comments' information*/
