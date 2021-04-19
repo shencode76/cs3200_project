@@ -198,7 +198,32 @@ delimiter ;
 select check_member("Baron");
 select check_member("Chris Jason");
 
+-- add a field in member table to store search history
+alter table Member
+add search_history_song varchar(30);
 
+drop procedure store_search_history;
+delimiter $$
+create procedure store_search_history(memberName varchar(30), search_song varchar(30))
+begin 
+declare memb_id int;
+select member_id into memb_id from Member where member_name = memberName;
+
+if (memberName in (select member_name from Member)) then
+update Member set search_history_song = search_song where member_id = memb_id;
+
+end if;
+
+if (search_song not in (select song_name from Song)) then
+insert into Song(song_name) values (search_song);
+end if;
+
+end $$ 
+delimiter ;
+call store_search_history("Steven Madison", "Only One");
+call store_search_history("Jose Wasenger", "Lost in TV");
+/* will be overwrite */
+call store_search_history("Jose Wasenger", "Temptation");
 
 
 
