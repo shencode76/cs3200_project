@@ -155,6 +155,28 @@ call create_account("Baron", "member");
 
 
 
+-- recommend alogorithm :
+-- recommend users the songs from their favourite artist, or the music that is in the same genre as their favorite singer
+
+
+delimiter $$ 
+create procedure recommendation(fav_singer varchar(30))
+begin 
+
+declare fav_genre int;
+select artist_genre into fav_genre from Artist where artist_name = fav_singer;
+
+select song_name as recommend_songs, artist_name from Song 
+join Artist 
+on artist_id = singer_id
+and (artist_name = fav_singer
+or song_genre_id = fav_genre);
+
+
+end $$
+delimiter ;
+call recommendation("Rihanna");
+call recommendation("Queen");
 
 
 
