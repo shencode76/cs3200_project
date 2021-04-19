@@ -1,3 +1,5 @@
+drop database MusicDB_Project;
+
 create database MusicDB_Project;
 
 use MusicDB_Project;
@@ -45,6 +47,72 @@ CONSTRAINT user_member_fk
 insert into Member (member_name, member_user_id) values ("Steven Madison", 4);
 insert into Member (member_name, member_user_id) values ("Jose Wasenger", 5);
 insert into Member (member_name, member_user_id) values ("Chris Jason", 6);
+
+
+/* create a genre table to store music genre, artist genre, album genre information*/
+create table Genre (
+genre_id int NOT NULL AUTO_INCREMENT,
+genre_name varchar(30),
+CONSTRAINT genre_pk PRIMARY KEY( genre_id)
+);
+insert into Genre(genre_name) values ("R&B");
+insert into Genre(genre_name) values ("Rock");
+insert into Genre(genre_name) values ("EDM");
+insert into Genre(genre_name) values ("Classical Music");
+
+
+/* create a artist table to store artists' information*/
+create table Artist (
+artist_id int NOT NULL AUTO_INCREMENT,
+artist_name varchar(30),
+artist_genre int,
+CONSTRAINT artist_pk PRIMARY KEY(artist_id),
+CONSTRAINT artist_genre_fk
+    FOREIGN KEY (artist_genre)
+    REFERENCES Genre (genre_id)
+);
+insert into Artist(artist_name, artist_genre) 
+values ("Queen", 2);
+insert into Artist(artist_name, artist_genre) 
+values ("Suede", 2);
+insert into Artist(artist_name, artist_genre) 
+values ("The Chainsmokers", 3);
+insert into Artist(artist_name, artist_genre) 
+values ("Rihanna", 1);
+insert into Artist(artist_name, artist_genre) 
+values ("YunDi Li", 4);
+insert into Artist(artist_name, artist_genre) 
+values ("Elstica", 2);
+
+
+/* create a Album table to store albums'' information*/
+create table Album (
+album_id int NOT NULL AUTO_INCREMENT,
+album_name varchar(30),
+album_artist int,
+CONSTRAINT album_pk PRIMARY KEY (album_id),
+CONSTRAINT album_artist_fk
+    FOREIGN KEY (album_artist)
+    REFERENCES Artist (artist_id)
+);
+insert into Album(album_name, album_artist) 
+values ("Absolulte Greatest", 1);
+insert into Album(album_name, album_artist) 
+values ("A New Memory", 2);
+insert into Album(album_name, album_artist) 
+values ("Memories Do Not Open", 3);
+insert into Album(album_name, album_artist) 
+values ("Loud", 4);
+insert into Album(album_name, album_artist) 
+values ("Portrait", 5);
+insert into Album(album_name, album_artist) 
+values ("Nothing Is Promised", 4);
+insert into Album(album_name, album_artist) 
+values ("Elastica", 6);
+
+
+
+
 
 /* create a song table to store songs' information*/
 create table Song (
@@ -112,66 +180,5 @@ insert into Comment(comments, commented_song, commented_by)
 values("Love this one's genre", 4, 2);
 
 
-/* create a Album table to store albums'' information*/
-create table Album (
-album_id int NOT NULL AUTO_INCREMENT,
-album_name varchar(30),
-album_artist int,
-CONSTRAINT album_pk PRIMARY KEY (album_id),
-CONSTRAINT album_artist_fk
-    FOREIGN KEY (album_artist)
-    REFERENCES Artist (artist_id)
-);
-insert into Album(album_name, album_artist) 
-values ("Absolulte Greatest", 1);
-insert into Album(album_name, album_artist) 
-values ("A New Memory", 2);
-insert into Album(album_name, album_artist) 
-values ("Memories Do Not Open", 3);
-insert into Album(album_name, album_artist) 
-values ("Loud", 4);
-insert into Album(album_name, album_artist) 
-values ("Portrait", 5);
-insert into Album(album_name, album_artist) 
-values ("Nothing Is Promised", 4);
-insert into Album(album_name, album_artist) 
-values ("Elastica", 6);
 
-
-/* create a genre table to store music genre, artist genre, album genre information*/
-create table Genre (
-genre_id int NOT NULL AUTO_INCREMENT,
-genre_name varchar(30),
-CONSTRAINT genre_pk PRIMARY KEY( genre_id)
-);
-insert into Genre(genre_name) values ("R&B");
-insert into Genre(genre_name) values ("Rock");
-insert into Genre(genre_name) values ("EDM");
-insert into Genre(genre_name) values ("Classical Music");
-
-
-
-
-/* create a artist table to store artists' information*/
-create table Artist (
-artist_id int NOT NULL AUTO_INCREMENT,
-artist_name varchar(30),
-artist_genre int,
-CONSTRAINT artist_pk PRIMARY KEY(artist_id),
-CONSTRAINT artist_genre_fk
-    FOREIGN KEY (artist_genre)
-    REFERENCES Genre (genre_id)
-);
-insert into Artist(artist_name, artist_genre) 
-values ("Queen", 2);
-insert into Artist(artist_name, artist_genre) 
-values ("Suede", 2);
-insert into Artist(artist_name, artist_genre) 
-values ("The Chainsmokers", 3);
-insert into Artist(artist_name, artist_genre) 
-values ("Rihanna", 1);
-insert into Artist(artist_name, artist_genre) 
-values ("YunDi Li", 4);
-insert into Artist(artist_name, artist_genre) 
-values ("Elstica", 2);
 
