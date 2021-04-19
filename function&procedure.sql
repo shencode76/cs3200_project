@@ -177,7 +177,26 @@ end $$
 delimiter ;
 call recommendation("Rihanna");
 call recommendation("Queen");
+						   
+					
+-- admin can check member's user_name and user_id if they know the member's member_name
+delimiter $$
+create function check_member(check_member varchar(30))
+returns varchar(40) deterministic
+contains sql
+begin 
 
+declare member_info varchar(40);
+select group_concat("USER ID : ", user_id, ", USER NAME : ", user_name) into member_info
+from User join Member 
+on member_user_id = user_id 
+and member_name = check_member;
+return member_info;
+
+end $$
+delimiter ;
+select check_member("Baron");
+select check_member("Chris Jason");
 
 
 
