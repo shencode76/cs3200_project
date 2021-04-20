@@ -29,6 +29,12 @@ CONSTRAINT user_admin_fk
     FOREIGN KEY (admin_user_id)
     REFERENCES User (user_id)
 );
+alter table Administrator drop foreign key user_admin_fk;
+alter table Administrator add constraint user_admin_fk
+foreign key (admin_user_id)
+    REFERENCES User (user_id)
+    on delete cascade;
+    
 insert into Administrator (admin_name, admin_user_id) values ("Murphy Lee", 1);
 insert into Administrator (admin_name, admin_user_id) values ("Amy Tan", 2);
 insert into Administrator (admin_name, admin_user_id) values ("Jordan Jason", 3);
@@ -44,6 +50,12 @@ CONSTRAINT user_member_fk
     FOREIGN KEY (member_user_id)
     REFERENCES User (user_id)
 );
+alter table Member drop foreign key user_member_fk;
+alter table Member add CONSTRAINT user_member_fk
+    FOREIGN KEY (member_user_id)
+    REFERENCES User (user_id)
+    on delete cascade;
+                                                                        
 insert into Member (member_name, member_user_id) values ("Steven Madison", 4);
 insert into Member (member_name, member_user_id) values ("Jose Wasenger", 5);
 insert into Member (member_name, member_user_id) values ("Chris Jason", 6);
