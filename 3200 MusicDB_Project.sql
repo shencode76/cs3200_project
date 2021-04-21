@@ -1,4 +1,4 @@
-drop database MusicDB_Project;
+drop database if exists MusicDB_Project;
 
 create database MusicDB_Project;
 
@@ -11,13 +11,13 @@ user_id int NOT NULL AUTO_INCREMENT,
 user_name varchar(30),
 CONSTRAINT user_pk PRIMARY KEY (user_id) 
 );
-insert into User (user_name) values ("MurphyL");
-insert into User (user_name) values ("AmyT");
-insert into User (user_name) values ("JordanM");
-insert into User (user_name) values ("StevenM");
-insert into User (user_name) values ("JoseW");
+insert into User (user_name) values ("Murphy Lee");
+insert into User (user_name) values ("Amy Tan");
+insert into User (user_name) values ("Jordan Jason");
+insert into User (user_name) values ("Steven Madison");
+insert into User (user_name) values ("Jose Wasenger");
 insert into User (user_name) values ("ChrisJ");
-insert into User (user_name) values ("Amily");
+insert into User (user_name) values ("Chris Jason");
 
 /* create a administrator table to store administrators' information*/
 create table Administrator (
@@ -29,12 +29,6 @@ CONSTRAINT user_admin_fk
     FOREIGN KEY (admin_user_id)
     REFERENCES User (user_id)
 );
-alter table Administrator drop foreign key user_admin_fk;
-alter table Administrator add constraint user_admin_fk
-foreign key (admin_user_id)
-    REFERENCES User (user_id)
-    on delete cascade;
-    
 insert into Administrator (admin_name, admin_user_id) values ("Murphy Lee", 1);
 insert into Administrator (admin_name, admin_user_id) values ("Amy Tan", 2);
 insert into Administrator (admin_name, admin_user_id) values ("Jordan Jason", 3);
@@ -50,12 +44,6 @@ CONSTRAINT user_member_fk
     FOREIGN KEY (member_user_id)
     REFERENCES User (user_id)
 );
-alter table Member drop foreign key user_member_fk;
-alter table Member add CONSTRAINT user_member_fk
-    FOREIGN KEY (member_user_id)
-    REFERENCES User (user_id)
-    on delete cascade;
-                                                                        
 insert into Member (member_name, member_user_id) values ("Steven Madison", 4);
 insert into Member (member_name, member_user_id) values ("Jose Wasenger", 5);
 insert into Member (member_name, member_user_id) values ("Chris Jason", 6);
@@ -95,8 +83,6 @@ insert into Artist(artist_name, artist_genre)
 values ("YunDi Li", 4);
 insert into Artist(artist_name, artist_genre) 
 values ("Elstica", 2);
-insert into Artist(artist_name, artist_genre) 
-values ("UMI", 1);
 
 
 /* create a Album table to store albums'' information*/
@@ -123,8 +109,7 @@ insert into Album(album_name, album_artist)
 values ("Nothing Is Promised", 4);
 insert into Album(album_name, album_artist) 
 values ("Elastica", 6);
-insert into Album(album_name, album_artist)
-values ("Butterfly", 7);
+
 
 
 
@@ -172,8 +157,6 @@ insert into Song(song_name, singer_id, song_in_album, song_genre_id)
 values ("Man Down", 4, 4, 1);
 insert into Song(song_name, singer_id, song_in_album, song_genre_id) 
 values ("Car Song", 6, 7, 2);
-insert into Song(song_name, singer_id, song_in_album, song_genre_id) 
-values ("Butterfly", 7, 8, 1);
 
 
 /* create a comment table to store comments' information*/
@@ -195,7 +178,3 @@ values("Awesome song", 3, 1);
 
 insert into Comment(comments, commented_song, commented_by) 
 values("Love this one's genre", 4, 2);
-
-
-
-
