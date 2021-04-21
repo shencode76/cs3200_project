@@ -6,19 +6,6 @@ use MusicDB_Project;
 -- member can search artists
 -- member can search songs according to genre
 -- member can leave comment under songs
-
-/*
-e.g. 
-artist : Beach Fossils
-song :  Lessons
-album : Shallow / Lesson
-search_album(shallow) -> 
-search_song(sson) -> 
-search_artist(beach) ->
-select * from table where 
-_name like '% ? %';
-*/
-
 -- only search for given album
 drop procedure if exists search_album;
 DELIMITER $$
@@ -67,8 +54,6 @@ call search_artist("Rihanna");
 call search_artist("Suede");
 
 
-
-
 -- generate all the artist, song, album that have given searcing condition 
 drop procedure if exists search;
 DELIMITER $$
@@ -86,12 +71,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-/*
--- select all the songs has Jazz as genre
-select song_name from Song join Genre 
-on song_genre_id = genre_id
-and genre_name = "Jazz";
-*/
 
 -- procedure : produce all the songs that is in given genre
 -- Output : the songs fit this genre
@@ -108,6 +87,7 @@ end $$
 delimiter ;
 call genre_search ("Rock");
 
+
 -- leave commet under songs 
 drop procedure if exists comment_on;
 delimiter $$
@@ -117,6 +97,7 @@ insert into Comment(comments) values (comment_content);
 
 end $$
 delimiter ;
+
 
 -- create account 
 drop procedure if exists create_account;
@@ -202,6 +183,7 @@ end $$
 delimiter ;
 call delete_song(1);
 
+
 -- admin can delete database member information
 drop procedure if exists delete_member;
 delimiter $$
@@ -215,3 +197,4 @@ delete from member where member_id = delete_member_id;
 end $$
 delimiter ;
 call delete_member(1);
+
