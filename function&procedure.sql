@@ -15,14 +15,12 @@ album : Shallow / Lesson
 search_album(shallow) -> 
 search_song(sson) -> 
 search_artist(beach) ->
-
 select * from table where 
 _name like '% ? %';
-
 */
 
 -- only search for given album
-drop procedure search_album;
+drop procedure if exists search_album;
 DELIMITER $$
 CREATE PROCEDURE search_album(in given_album VARCHAR(30))
 BEGIN
@@ -37,7 +35,7 @@ call search_album("Loud");
 
 
 -- only search for given song
-drop procedure search_song;
+drop procedure if exists search_song;
 DELIMITER $$
 CREATE PROCEDURE search_song(in given_song VARCHAR(30))
 BEGIN
@@ -52,6 +50,7 @@ DELIMITER ;
 call search_song("What's My Name");
 
 -- only search for given artist
+drop procedure if exists search_artist;
 DELIMITER $$
 CREATE PROCEDURE search_artist(in given_artist VARCHAR(30))
 BEGIN
@@ -71,6 +70,7 @@ call search_artist("Suede");
 
 
 -- generate all the artist, song, album that have given searcing condition 
+drop procedure if exists search;
 DELIMITER $$
 CREATE PROCEDURE Search (in search_condition VARCHAR(30))
 BEGIN
@@ -95,8 +95,8 @@ and genre_name = "Jazz";
 
 -- procedure : produce all the songs that is in given genre
 -- Output : the songs fit this genre
+drop procedure if exists genre_search;
 delimiter $$ 
-drop procedure genre_search;
 create procedure genre_search(in given_genre varchar(30))
 begin 
 
@@ -109,7 +109,7 @@ delimiter ;
 call genre_search ("Rock");
 
 -- leave commet under songs 
-drop procedure comment_on;
+drop procedure if exists comment_on;
 delimiter $$
 create procedure comment_on(in comment_content varchar(30))
 begin 
@@ -119,10 +119,10 @@ end $$
 delimiter ;
 
 -- create account 
-drop procedure create_account;
+drop procedure if exists create_account;
 
 delimiter $$
-create procedure create_account(in userName varchar(30), accType varchar(30))
+create procedure create_account(in userName varchar(30))
 begin 
 
 declare nameOccupied varchar(100);
@@ -138,27 +138,21 @@ insert into User (user_name) values (userName);
 else select nameOccupied;
 end if;
 
-if (accType = "member") 
-then insert into Member (member_name, member_user_id) 
-values  (userName, (select user_id from User where user_name = userName));
-elseif (accType = "admin") 
-then insert into Administrator (admin_name, admin_user_id)
-values (userName, (select user_id from User where user_name = userName));
-else select typeNotExist;
-end if;
+insert into Member (member_name) 
+values  (userName);
+
 
 
 end $$
 delimiter ;
-call create_account("Stanley", "admin");
-call create_account("Baron", "member");
-
+call create_account("Stanley");
+call create_account("Baron");
 
 
 -- recommend alogorithm :
 -- recommend users the songs from their favourite artist, or the music that is in the same genre as their favorite singer
 
-
+drop procedure if exists recommendation;
 delimiter $$ 
 create procedure recommendation(fav_singer varchar(30))
 begin 
@@ -178,55 +172,10 @@ delimiter ;
 call recommendation("Rihanna");
 call recommendation("Queen");
 						   
-					
--- admin can check member's user_name and user_id if they know the member's member_name
-delimiter $$
-create function check_member(check_member varchar(30))
-returns varchar(40) deterministic
-contains sql
-begin 
-
-declare member_info varchar(40);
-select group_concat("USER ID : ", user_id, ", USER NAME : ", user_name) into member_info
-from User join Member 
-on member_user_id = user_id 
-and member_name = check_member;
-return member_info;
-
-end $$
-delimiter ;
-select check_member("Baron");
-select check_member("Chris Jason");
-
--- add a field in member table to store search history
-alter table Member
-add search_history_song varchar(30);
-
-drop procedure store_search_history;
-delimiter $$
-create procedure store_search_history(memberName varchar(30), search_song varchar(30))
-begin 
-declare memb_id int;
-select member_id into memb_id from Member where member_name = memberName;
-
-if (memberName in (select member_name from Member)) then
-update Member set search_history_song = search_song where member_id = memb_id;
-
-end if;
-
-if (search_song not in (select song_name from Song)) then
-insert into Song(song_name) values (search_song);
-end if;
-
-end $$ 
-delimiter ;
-call store_search_history("Steven Madison", "Only One");
-call store_search_history("Jose Wasenger", "Lost in TV");
-/* will be overwrite */
-call store_search_history("Jose Wasenger", "Temptation");
 
 
 -- user can update their user name 
+drop procedure if exists update_identity;
 delimiter $$
 create procedure update_identity(exist_id int, new_user_name varchar(30))
 begin 
@@ -239,27 +188,30 @@ delimiter ;
 call update_identity(4, "Steven Madi");
 
 
--- admin can delete database tuples or user information
-drop procedure delete_from_db;
+-- admin can delete database tuples
+drop procedure if exists delete_song;
 delimiter $$
-create procedure delete_from_db(content_delete varchar(30), type_delete varchar(30))
+create procedure delete_song(delete_song_id int)
 begin 
 
-if (type_delete = "song") then delete from Song where song_id = (select song_id from Song where song_name = content_delete);
-elseif (type_delete = "user") then delete from User where user_id = (select user_id from User where user_name = content_delete);
-end if;
+delete from Song where song_id = delete_song_id;
  
 
 
 end $$
 delimiter ;
-call delete_from_db("Butterfly", "song");
+call delete_song(1);
+
+-- admin can delete database member information
+drop procedure if exists delete_member;
+delimiter $$
+create procedure delete_member(delete_member_id int)
+begin 
+
+delete from member where member_id = delete_member_id;
+ 
 
 
-
-
-
-
-
-
-
+end $$
+delimiter ;
+call delete_member(1);
