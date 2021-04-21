@@ -6,6 +6,7 @@ use MusicDB_Project;
 -- member can search artists
 -- member can search songs according to genre
 -- member can leave comment under songs
+
 -- only search for given album
 drop procedure if exists search_album;
 DELIMITER $$
@@ -35,6 +36,7 @@ BEGIN
 END$$
 DELIMITER ;
 call search_song("What's My Name");
+
 
 -- only search for given artist
 drop procedure if exists search_artist;
@@ -97,6 +99,7 @@ insert into Comment(comments) values (comment_content);
 
 end $$
 delimiter ;
+call comment_on("What a wonderful song");
 
 
 -- create account 
@@ -128,6 +131,7 @@ end $$
 delimiter ;
 call create_account("Stanley");
 call create_account("Baron");
+call create_account("Betty");
 
 
 -- recommend alogorithm :
@@ -166,7 +170,7 @@ update User set user_name = new_user_name where user_id = exist_id;
 end $$
 delimiter ;
 
-call update_identity(4, "Steven Madi");
+call update_identity(4, "Steven Madi"); /* the fourth user's user name would be updated*/
 
 
 -- admin can delete database tuples
@@ -181,7 +185,7 @@ delete from Song where song_id = delete_song_id;
 
 end $$
 delimiter ;
-call delete_song(1);
+call delete_song(1); /* The "Radio Ga Ga" would be deleted*/
 
 
 -- admin can delete database member information
@@ -192,9 +196,7 @@ begin
 
 delete from member where member_id = delete_member_id;
  
-
-
 end $$
 delimiter ;
-call delete_member(1);
+call delete_member(1); /* The first member would be deleted*/
 
