@@ -18,6 +18,8 @@ insert into User (user_name) values ("Steven Madison");
 insert into User (user_name) values ("Jose Wasenger");
 insert into User (user_name) values ("ChrisJ");
 insert into User (user_name) values ("Chris Jason");
+/* There will have two more users be created by the following procedure,
+They are "Stanley" and "Baron"*/
 
 /* create a administrator table to store administrators' information*/
 create table Administrator (
@@ -44,7 +46,10 @@ CONSTRAINT user_member_fk
     FOREIGN KEY (member_user_id)
     REFERENCES User (user_id)
 );
+/* the first Meber "Steven Madison" 's indentity will be updated by the following procedure*/
+/* the first Meber "Steven Madison" will be deleted by the following procedure*/
 insert into Member (member_name, member_user_id) values ("Steven Madison", 4);
+
 insert into Member (member_name, member_user_id) values ("Jose Wasenger", 5);
 insert into Member (member_name, member_user_id) values ("Chris Jason", 6);
 
@@ -132,13 +137,7 @@ CONSTRAINT song_genre_id_fk
     FOREIGN KEY (song_genre_id)
     REFERENCES Genre (genre_id)
 );
-/*
-delete from Song where song_name = "Radio Ga Ga";
-delete from Song where song_name = "Lost in TV";
-delete from Song where song_name = "Paris";
-delete from Song where song_name = "What's My Name";
-delete from Song where song_name = "Nocturne, Op.9, No.2";
-*/
+/* The first song "Radio Ga Ga" will be deleted by the following procedure*/
 insert into Song(song_name, singer_id, song_in_album, song_genre_id) 
 values ("Radio Ga Ga", 1, 1, 2);
 insert into Song(song_name, singer_id, song_in_album, song_genre_id) 
@@ -178,3 +177,9 @@ values("Awesome song", 3, 1);
 
 insert into Comment(comments, commented_song, commented_by) 
 values("Love this one's genre", 4, 2);
+
+
+
+
+
+
