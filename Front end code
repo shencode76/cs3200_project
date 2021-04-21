@@ -1,0 +1,509 @@
+import pymysql
+import getpass
+
+
+
+# prompt user to enter MySQL user name
+user = input('Enter your user name and password: ')
+
+# prompt user to enter MySQL password
+password = getpass.getpass()
+
+
+# use the user provided username and password values to connect to the lotrfinal database.
+try:
+    cnx = pymysql.connect(host='localhost', user=user,                          
+                          password=password,                      
+                          db='MusicDB_Project', charset='utf8mb4',                         
+                          cursorclass=pymysql.cursors.DictCursor)
+    
+except pymysql.err.OperationalError:    
+    print('Error: %d: %s' % (e.args[0], e.args[1]))
+
+#create dics for song, album, artist genre and users
+songs = []
+
+cur = cnx.cursor()    
+stmt_select = "select * from song order by song_name"    
+cur.execute(stmt_select)    
+rows = cur.fetchall()
+for row in rows:            
+    s_name = row["song_name"]
+    s_name_lower = s_name.lower()
+    songs.append(s_name)
+    songs.append(s_name_lower)
+cur.close()
+
+albums = []
+
+cur = cnx.cursor()    
+stmt_select = "select * from album order by album_name"    
+cur.execute(stmt_select)    
+rows = cur.fetchall()
+for row in rows:            
+    a_name = row["album_name"]
+    a_name_lower = a_name.lower()
+    albums.append(a_name)
+    albums.append(a_name_lower)
+cur.close()
+    
+artists = []
+
+cur = cnx.cursor()    
+stmt_select = "select * from artist order by artist_name"    
+cur.execute(stmt_select)    
+rows = cur.fetchall()
+for row in rows:            
+    ar_name = row["artist_name"]
+    ar_name_lower = ar_name.lower()
+    artists.append(ar_name)
+    artists.append(ar_name_lower)
+cur.close()
+
+genres = []
+
+cur = cnx.cursor()    
+stmt_select = "select * from genre order by genre_name"    
+cur.execute(stmt_select)    
+rows = cur.fetchall()
+for row in rows:            
+    g_name = row["genre_name"]
+    g_name_lower = g_name.lower()
+    genres.append(g_name)
+    genres.append(g_name_lower)
+cur.close()           
+
+members = []
+
+cur = cnx.cursor()    
+stmt_select = "select * from member order by member_name"    
+cur.execute(stmt_select)    
+rows = cur.fetchall()
+for row in rows:            
+    m_name = row["member_name"]
+    m_name_lower = m_name.lower()
+    members.append(m_name)
+    members.append(m_name_lower)
+cur.close()
+
+admins = []
+
+cur = cnx.cursor()    
+stmt_select = "select * from administrator order by admin_name"    
+cur.execute(stmt_select)    
+rows = cur.fetchall()
+for row in rows:            
+    ad_name = row["admin_name"]
+    ad_name_lower = ad_name.lower()
+    admins.append(ad_name)
+    admins.append(ad_name_lower)
+cur.close()
+
+song_ids = []
+
+cur = cnx.cursor()    
+stmt_select = "select * from song order by song_id"    
+cur.execute(stmt_select)    
+rows = cur.fetchall()
+for row in rows:            
+    song_id = row["song_id"]
+    song_id = str(song_id)
+    song_ids.append(song_id)
+cur.close()
+
+member_ids = []
+
+cur = cnx.cursor()    
+stmt_select = "select * from member order by member_id"    
+cur.execute(stmt_select)    
+rows = cur.fetchall()
+for row in rows:            
+    member_id = row["member_id"]
+    member_id = str(member_id)
+    member_ids.append(member_id)
+cur.close()
+    
+    
+# ask the user if he is a member or administrator
+
+def selectFromDict(options, name):
+    index = 0
+    indexValidList = []
+    print('Select a ' + name + ':')
+    for optionName in options:
+        index = index + 1
+        indexValidList.extend([options[optionName]])
+        print(str(index) + ') ' + optionName)
+    inputValid = False
+    while not inputValid:
+        inputRaw = input(name + ': ')
+        inputNo = int(inputRaw) - 1
+        if inputNo > -1 and inputNo < len(indexValidList):
+            selected = indexValidList[inputNo]
+            print('Selected ' +  name + ': ' + selected)
+            inputValid = True
+            break
+        else:
+            print('Please select a valid ' + name + ' number')
+
+    return selected
+
+options = {}
+options['I am a member'] = 'member'
+options['I am an administrator'] = 'administrator'
+options['Neither'] = 'neither'
+
+print('Who are you?')
+who = selectFromDict(options, 'option')
+
+if who == 'member':
+    # prompt user to enter username
+    user_name = input('Please enter your user name: ')
+    
+    # check if the user is a member
+    while user_name not in members:
+        print('User cannot be found.')
+        user_name = input('Please enter your user name: ')
+        if user_name in members:
+            break
+            
+    #ask the user whether he wants to change user name
+    yes_no = {}
+    yes_no['Yes'] = 'yes'
+    yes_no['No'] = 'no'
+    print('Do you want to change your user name?')
+    answer = selectFromDict(yes_no, 'option')
+    
+    
+    if answer == 'yes':
+        user_id = input('Please enter your user id: ')
+        new_name = input('Please enter your new user name: ')
+        # use the input user provides to call procedure comment_on
+        try:
+            cur = cnx.cursor()    
+            cur.callproc("update_identity",(user_id, new_name,))
+            cnx.commit()
+            cur.close()
+            
+        except pymysql.Error as e:    
+            print('Error: %d: %s' % (e.args[0], e.args[1]))
+        
+        
+        
+    
+    # ask the user what to do
+    todos = {}
+    todos['I want to search for music'] = 'search'
+    todos['I want to be recommended with music'] = 'recommend'
+    todos['I want to leave a comment'] = 'comment'
+    
+    print('What would you like to do?')
+    todo = selectFromDict(todos, 'option')
+    
+    if todo == 'search':
+        # prompt user to enter a searching catagory
+        cato = input('Which Catogory would you like to search by?(song/album/artist/genre/general) ')
+        catos = ('song', 'album', 'artist', 'genre', 'general')
+
+        while cato not in catos:
+            print('Please enter a valid catogory')
+            cato = input('Which Catogory would you like to search by?(song/album/artist/genre/general) ')
+            if cato in catos:
+                break
+
+        # search song
+        if cato == 'song':
+            # prompt user to enter a song name
+            song = input('Enter a song: ')
+
+            # check if the song name user provides is a valid input, if not ask user to enter another name
+            while song not in songs:
+                print('no result.')
+                song = input('Enter a song: ')
+                if song in songs:
+                    break
+
+            # use the valid input user provides to call procedure search_song
+            try:  
+                cur = cnx.cursor()    
+                cur.callproc("search_song",(song,))    
+        
+                for row in cur.fetchall():        
+                    print(row)    
+        
+                while cur.nextset():
+                    for row in cur.fetchall():            
+                        print(row)    
+                cur.close()
+
+            except pymysql.Error as e:    
+                print('Error: %d: %s' % (e.args[0], e.args[1]))
+                
+        # search album
+        elif cato == 'album':
+            # prompt user to enter an album name
+            album = input('Enter an album: ')
+
+            # check if the album name user provides is a valid input, if not ask user to enter another name
+            while album not in albums:
+                print('no result.')
+                album = input('Enter an album: ')
+                if album in albums:
+                    break
+
+            # use the valid input user provides to call procedure search_album
+            try:  
+                cur = cnx.cursor()    
+                cur.callproc("search_album",(album,))    
+        
+                for row in cur.fetchall():        
+                    print(row)    
+        
+                while cur.nextset():
+                    for row in cur.fetchall():            
+                        print(row)    
+                cur.close()
+
+            except pymysql.Error as e:    
+                print('Error: %d: %s' % (e.args[0], e.args[1]))
+        
+        # search artist
+        elif cato == 'artist':
+            # prompt user to enter an artist name
+            artist = input('Enter an artist: ')
+
+            # check if the artist name user provides is a valid input, if not ask user to enter another name
+            while artist not in artists:
+                print('no result.')
+                artist = input('Enter an artist: ')
+                if artist in artists:
+                    break
+
+            # use the valid input user provides to call procedure search_artist
+            try:  
+                cur = cnx.cursor()    
+                cur.callproc("search_artist",(artist,))    
+        
+                for row in cur.fetchall():        
+                    print(row)    
+        
+                while cur.nextset():
+                    for row in cur.fetchall():            
+                        print(row)    
+                cur.close()
+
+            except pymysql.Error as e:    
+                print('Error: %d: %s' % (e.args[0], e.args[1]))
+        
+        # search genre
+        elif cato == 'genre':
+            # prompt user to enter a song name
+            genre = input('Enter a genre: ')
+
+            # check if the genre name user provides is a valid input, if not ask user to enter another name
+            while genre not in genres:
+                print('no result.')
+                genre = input('Enter a genre: ')
+                if genre in genres:
+                    break
+
+            # use the valid input user provides to call procedure genre_search
+            try:  
+                cur = cnx.cursor()    
+                cur.callproc("genre_search",(genre,))    
+        
+                for row in cur.fetchall():        
+                    print(row)    
+        
+                while cur.nextset():
+                    for row in cur.fetchall():            
+                        print(row)    
+                cur.close()
+
+            except pymysql.Error as e:    
+                print('Error: %d: %s' % (e.args[0], e.args[1]))
+                
+        # search in genral
+        else:
+            # prompt user to enter a thing
+            search_cond = input('What you would like to search for? ')
+
+            # check if the searching condition user provides is a valid input, if not ask user to enter another one
+            while search_cond not in songs and search_cond not in albums and search_cond not in artists:
+                print('no result.')
+                search_cond = input('What you would like to search for? ')
+                if search_cond in songs or search_cond in albums or search_cond in artists:
+                    break
+
+            # use the valid input user provides to call procedure search
+            try:  
+                cur = cnx.cursor()    
+                cur.callproc("search",(search_cond,))    
+        
+                for row in cur.fetchall():        
+                    print(row)    
+        
+                while cur.nextset():
+                    for row in cur.fetchall():            
+                        print(row)    
+                cur.close()
+
+            except pymysql.Error as e:    
+                print('Error: %d: %s' % (e.args[0], e.args[1]))
+        
+                
+    elif todo == 'recommend':
+        # prompt user to enter an artist name
+        fav = input('Enter an artist which you like her or his genre? ')
+
+        # check if the artist name user provides is a valid input, if not ask user to enter another name
+        while fav not in artists:
+            print('no result.')
+            fav = input('Enter an artist which you like her or his genre? ')
+            if fav in artists:
+                break
+
+        # use the valid input user provides to call procedure recommendation
+        try:
+            cur = cnx.cursor()    
+            cur.callproc("recommendation",(fav,))    
+        
+            for row in cur.fetchall():        
+                print(row)    
+        
+            while cur.nextset():
+                 for row in cur.fetchall():            
+                    print(row)    
+            cur.close()
+
+        except pymysql.Error as e:    
+            print('Error: %d: %s' % (e.args[0], e.args[1]))
+        
+      
+    else:
+        content = input('What do you like to say? ')
+            
+        # use the input user provides to call procedure comment_on
+        try:
+            cur = cnx.cursor()    
+            cur.callproc("comment_on",(content,))
+            cnx.commit()
+            cur.close()
+            
+        except pymysql.Error as e:    
+            print('Error: %d: %s' % (e.args[0], e.args[1]))
+            
+elif who == 'administrator':
+    # prompt user to enter username
+    user_name = input('Please enter your user name: ')
+    
+    # check if the user is a member
+    while user_name not in admins:
+        print('User cannot be found.')
+        user_name = input('Please enter your user name: ')
+        if user_name in admins:
+            break
+            
+            
+    #ask the user whether he wants to change user name
+    yes_no = {}
+    yes_no['Yes'] = 'yes'
+    yes_no['No'] = 'no'
+    print('Do you want to change your user name?')
+    answer = selectFromDict(yes_no, 'option')
+    
+    
+    if answer == 'yes':
+        user_id = input('Please enter your user id: ')
+        new_name = input('Please enter your new user name: ')
+        # use the input user provides to call procedure comment_on
+        try:
+            cur = cnx.cursor()    
+            cur.callproc("update_identity",(user_id, new_name,))
+            cnx.commit()
+            cur.close()
+            
+        except pymysql.Error as e:    
+            print('Error: %d: %s' % (e.args[0], e.args[1]))
+        
+            
+    # ask the user what to do        
+    todos_ad = {}
+    todos_ad['I want to delete a song information from database'] = 'song'
+    todos_ad['I want to delete a user information from database'] = 'user'
+    
+    print('What would you like to do?')
+    todo_ad = selectFromDict(todos_ad, 'option')
+    
+    if todo_ad == 'song':
+        # prompt user to enter song_id
+        del_song = input('Enter a song id which you want to delete: ')
+
+        # check if the song id user provides is a valid input, if not ask user to enter another name
+        while del_song not in song_ids:
+            print('no such song.')
+            del_song = input('Enter a song id which you want to delete: ')
+            if del_song in song_ids:
+                break
+
+        # use the valid input user provides to call procedure delete_song
+        try:
+            cur = cnx.cursor()    
+            cur.callproc("delete_song",(del_song))    
+            cnx.commit()
+            cur.close()
+
+        except pymysql.Error as e:    
+            print('Error: %d: %s' % (e.args[0], e.args[1]))
+            
+        
+
+    else:
+        # prompt user to enter member_id
+        del_member = input('Enter a member id which you want to delete: ')
+
+        # check if the memberid user provides is a valid input, if not ask user to enter another name
+        while del_member not in member_ids:
+            print('no such member.')
+            del_member = input('Enter a member id which you want to delete: ')
+            if del_member in member_ids:
+                break
+
+        # use the valid input user provides to call procedure delete_member
+        try:
+            cur = cnx.cursor()    
+            cur.callproc("delete_member",(del_member))    
+            cnx.commit()
+            cur.close()
+
+        except pymysql.Error as e:    
+            print('Error: %d: %s' % (e.args[0], e.args[1]))
+    
+else:
+    register_name = input('We will register you as a member. Please enter your name: ')
+    register_name = str(register_name)
+    # use the valid input user provides to call procedure delete_member
+    try:
+        cur = cnx.cursor()    
+        cur.callproc("create_account",(register_name,))    
+        cnx.commit()
+        print('Conguatulations! You are a member now!')
+        cur.close()
+
+    except pymysql.Error as e:    
+        print('Error: %d: %s' % (e.args[0], e.args[1]))        
+        
+        
+        
+cnx.close()
+        
+        
+    
+    
+
+            
+            
+
+    
+
+    
