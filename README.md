@@ -13,7 +13,7 @@ We planned to build a Music Database System, where users can log in by Apply ID 
 Database Language
 --- MySQL
 --- Software: MySQL WorkBench
---- Language: Java
+--- Language: Python
 
 Justification for SQL Database:
 (cite from Project_Proposal_Example2)				
