@@ -1,7 +1,5 @@
-# cs3200_project
+# cs3200_project: Music database project
 ## Music Database System
-### Topic --- Music database project
-
 
 ## Project description:
 
