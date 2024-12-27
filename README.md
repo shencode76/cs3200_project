@@ -1,19 +1,17 @@
 # cs3200_project
-Music Database System
+## Music Database System
+### Topic --- Music database project
 
 
-Topic --- Music database project
-
-
-Project description:
+## Project description:
 
 People often listen to music. Sometimes they search for the music they want to listen to directly. Sometimes they search for music by artists or genres of their interests. Sometimes when they do not have particular songs they want to listen to, they just use websites or music applications to recommend music for them. When they find some good music, they may want to follow the artists, collect albums or share music with others. A database system for music can allow users to do plenty of things they wish to do.
 We planned to build a Music Database System, where users can log in by Apply ID or their FaceBook ID, and search for songs in the library by songs’ names, album’s names or musicians’ names. At the same time, users can share their feelings with other listeners by leaving comments under the songs.
 
 Database Language
---- MySQL
---- Software: MySQL WorkBench
---- Language: Python
+- MySQL
+- Software: MySQL WorkBench
+- Language: Python
 
 Justification for SQL Database:
 (cite from Project_Proposal_Example2)				
